@@ -9,6 +9,8 @@ echo -e " ==========================================\n"
 
 MIN_BRIGHTNESS="0.1"
 MAX_BRIGHTNESS="3"
+INT_MIN_BRIGHTNESS=$(echo " $MIN_BRIGHTNESS * 10 " | bc)
+INT_MAX_BRIGHTNESS=$(echo " $MAX_BRIGHTNESS * 10 " | bc)
 
 monitors=($(xrandr | awk '/ connected / {print $1}'))
 
@@ -26,8 +28,7 @@ while true; do
 	MONITOR_CHOCE_ON_ARRAY=$(($MONITOR_CHOCE - 1))
 	INTEGER_BRING=$(echo "$BRING * 10" | bc)
 	if (( MONITOR_CHOCE_ON_ARRAY <= AMOUNT_MONITORS && MONITOR_CHOCE_ON_ARRAY >= 0 )); then
-		#if (( $(echo "$brightness_value >= $MIN_BRIGHTNESS" | bc -l) && $(echo "$brightness_value <= $MAX_BRIGHTNESS" | bc -l) )); then
-		if (("$INTEGER_BRING" -le "$MAX_BRIGHTNESS") && ("$INTEGER_BRING" -gt 0 )); then
+		if (( $(echo "$INTEGER_BRING >= $INT_MIN_BRIGHTNESS" | bc -l) )) && (( $(echo "$INTEGER_BRING <= $INT_MAX_BRIGHTNESS" | bc -l) )); then
 			xrandr --output ${monitors[$MONITOR_CHOCE_ON_ARRAY]} --brightness "$BRING"
 			echo -e "\n Brightness monitor regulated!"
 			exit 0
